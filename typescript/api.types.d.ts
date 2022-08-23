@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios'
+
 declare global {
   namespace types {
     namespace API {
@@ -5,14 +7,15 @@ declare global {
       export type RouteNameType = `${string}-${RequestType}`;
       export type ResponseDataType = string | number | object | boolean;
 
-      export interface RequestBody<Data = any, Config = any> {
+      export interface RequestBody<Data = any, Config = AxiosRequestConfig> {
         api: string;
         data?: Data;
         config?: Config;
       }
-      
+
       export interface ResponseModel {
         data?: ResponseDataType;
+        message?: string;
         success: boolean
       }
 
@@ -34,7 +37,7 @@ declare global {
 
       type TriggerApiCallFn = (params?: Partial<TriggerApiCallParams>, stateModifyCallbacks?: StateModifyCallbacks) => Promise<ResponseModel>
 
-      interface PropsComingFromWithRequest extends Partial<UseRequestReturnType> {
+      interface ComponentPropsForWithRequest extends Partial<UseRequestReturnType> {
         triggerApiCall?: TriggerApiCallFn;
       }
 
@@ -48,6 +51,7 @@ declare global {
         data: any,
         loading: boolean,
         errorMessage: string,
+        setErrorMessage: (errorMessage: string) => void;
         state: StateType,
         setState: (state: Partial<StateData>, requestId?: string) => void,
         request: RequestFn
@@ -68,4 +72,4 @@ declare global {
   }
 }
 
-export {}
+export { }

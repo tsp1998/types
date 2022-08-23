@@ -20,7 +20,7 @@ declare global {
         optionalData?: Data.KeyValue
       }
 
-      export type createControllerFunctionType<ReturnType = any> = (params: CreateControllerFunctionParams) => ReturnType
+      export type CreateControllerFnType<ReturnType = any> = (params: CreateControllerFunctionParams) => ReturnType
 
       export type MongooseDataType = 'String' | 'Number' | 'Date' | 'Buffer' | 'Boolean' | 'Mixed' | 'ObjectId' | 'Array' | 'Decimal128' | 'Map' | 'Schema';
 
@@ -29,7 +29,7 @@ declare global {
       }
 
       export interface CreateControllerFnsType {
-        [key: API.RouteNameType]: createControllerFunctionType<RequestHandler>
+        [key: API.RouteNameType]: CreateControllerFnType<RequestHandler>
       }
 
       export interface ControllersEntries {
@@ -38,18 +38,24 @@ declare global {
       }
 
       export interface MiddlewareEntries {
-        [key: API.RouteNameType]: Array<RequestHandler>
+        [key: `${API.RouteNameType}{middlewares}`]: Array<RequestHandler>
       }
 
-      export type SchemaDefinitionType = { [id: string]: SchemaDefinitionProperty };
+      export type SchemaDefinitionType = {
+        [id: string]: SchemaDefinitionProperty
+      };
       export type ModelOptionsType = SchemaOptions;
+
+      export type SchemaDefinitionWithFrontEndData = {
+        [id: string]: SchemaDefinitionProperty & Partial<types.Component.InputProps> & Partial<types.Component.FileInputProps>
+      };
 
       export interface ArtifactData {
         name: string;
         itemRoutes: Array<API.RequestType>;
         listRoutes: Array<API.RequestType>;
         middleware?: Array<RequestHandler>;
-        schema: SchemaDefinitionType;
+        schema: SchemaDefinitionWithFrontEndData;
         modelOptions?: ModelOptionsType;
       }
     }
