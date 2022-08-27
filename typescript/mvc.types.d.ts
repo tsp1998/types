@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { Model, SchemaDefinitionProperty, SchemaOptions } from 'mongoose';
+import { Model, SchemaDefinition as SchemaDefinitionFromMongoose, SchemaDefinitionProperty, SchemaDefinitionType, SchemaOptions } from 'mongoose';
 
 declare global {
   namespace types {
@@ -41,10 +41,12 @@ declare global {
         [key: `${API.RouteNameType}{middlewares}`]: Array<RequestHandler>
       }
 
-      export type SchemaDefinitionType = {
+      type SchemaDefinition = SchemaDefinitionFromMongoose<SchemaDefinitionType<any>>;
+
+      export type RawSchemaDefinition = {
         [id: string]: SchemaDefinitionProperty
       };
-      export type ModelOptionsType = SchemaOptions;
+      export type ModelOptions = SchemaOptions & { isRawSchema?: boolean };
 
       export type SchemaDefinitionWithFrontEndData = {
         [id: string]: SchemaDefinitionProperty & Partial<types.Component.InputProps> & Partial<types.Component.FileInputProps>
@@ -56,7 +58,7 @@ declare global {
         listRoutes: Array<API.RequestType>;
         middleware?: Array<RequestHandler>;
         schema: SchemaDefinitionWithFrontEndData;
-        modelOptions?: ModelOptionsType;
+        modelOptions?: ModelOptions;
       }
     }
   }
