@@ -12,6 +12,7 @@ declare global {
         name?: string;
         status: number;
         statusText: string;
+        originalMessage?: string;
       }
 
       export interface RequestBody<Data = any, Config = AxiosRequestConfig> {
@@ -90,8 +91,8 @@ declare global {
       type RequestFnReturnType = Promise<ResponseModel>
 
       type RequestFn = (
-        requestBody: types.API.RequestBody,
-        requestType?: types.API.RequestType,
+        requestBody: RequestBody,
+        optionalData?: RequestOptionalData,
       ) => RequestFnReturnType
 
       export type AbortFn = () => Promise<boolean>;
@@ -106,6 +107,7 @@ declare global {
         requestType?: types.API.RequestType,
         customRequestFn?: types.API.RequestFn
         requestId?: string;
+        customErrorMessage?: string;
       }
     }
   }
