@@ -7,6 +7,13 @@ declare global {
       export type RouteNameType = `${string}-${RequestType}`;
       export type ResponseDataType = string | number | object | boolean;
 
+      interface AdditionalAxiosData {
+        code?: string;
+        name?: string;
+        status: number;
+        statusText: string;
+      }
+
       export interface RequestBody<Data = any, Config = AxiosRequestConfig> {
         api: string;
         data?: Data;
@@ -14,18 +21,19 @@ declare global {
       }
 
       export interface ResponseModel {
-        data?: ResponseDataType;
+        success: boolean;
         message?: string;
-        success: boolean
+        data?: ResponseDataType;
+        additionalAxiosData?: AdditionalAxiosData;
       }
 
-      export interface RequestFunctionParams {
+      export interface RequestFnParams {
         requestType: RequestType,
         dataType?: Data.DataType,
         requestBody: RequestBody
       }
 
-      export type TriggerApiCallParams = Omit<RequestFunctionParams, 'requestBody'> & {
+      export type TriggerApiCallParams = Omit<RequestFnParams, 'requestBody'> & {
         requestId?: string;
         requestIdToDelete?: string;
         get?: Partial<RequestBody>;
@@ -47,6 +55,16 @@ declare global {
         errorMessage: string;
       }
 
+      interface AJAXStateProps {
+        data?: any;
+        loading?: any;
+        error?: Error | null;
+      }
+
+      interface AJAXStates {
+        [key: string]: AJAXStateProps
+      }
+
       export interface UseRequestReturnType {
         data: any,
         loading: boolean,
@@ -54,8 +72,13 @@ declare global {
         setErrorMessage: (errorMessage: string) => void;
         state: StateType,
         setState: (state: Partial<StateData>, requestId?: string) => void,
-        request: RequestFn
+        request: UseRequestRequestFn
       }
+
+      export type UseRequestRequestFn = (
+        params: RequestFnParams & { requestId?: string, requestIdToDelete?: string },
+        stateModifyCallbacks?: StateModifyCallbacks
+      ) => RequestFnReturnType
 
       export type StateType = Data.KeyValue<Partial<StateData>>
 
@@ -64,10 +87,26 @@ declare global {
         stateModifyCallbackOnFailure?: (state: StateType) => StateType
       }
 
-      export type RequestFn = (
-        params: RequestFunctionParams & { requestId?: string, requestIdToDelete?: string },
-        stateModifyCallbacks?: StateModifyCallbacks
-      ) => Promise<ResponseModel>
+      type RequestFnReturnType = Promise<ResponseModel>
+
+      type RequestFn = (
+        requestBody: types.API.RequestBody,
+        requestType?: types.API.RequestType,
+      ) => RequestFnReturnType
+
+      export type AbortFn = () => Promise<boolean>;
+
+      interface Request {
+        response: RequestFnReturnType;
+        requestStatus: 'pending' | 'fulfilled' | 'rejected' | 'aborted';
+        abort: AbortFn;
+      }
+
+      interface RequestOptionalData {
+        requestType?: types.API.RequestType,
+        customRequestFn?: types.API.RequestFn
+        requestId?: string;
+      }
     }
   }
 }
