@@ -46,6 +46,7 @@ declare global {
         maxFiles?: number;
         dropZoneText?: string;
         canCancel?: boolean;
+        allFilesNeeded?: boolean;
       }
 
       export interface ComponentDataModel {

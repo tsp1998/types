@@ -21,7 +21,7 @@ declare global {
         config?: Config;
       }
 
-      export interface ResponseModel {
+      export interface Response {
         success: boolean;
         message?: string;
         data?: ResponseDataType;
@@ -44,7 +44,7 @@ declare global {
         put?: Partial<RequestBody>;
       }
 
-      type TriggerApiCallFn = (params?: Partial<TriggerApiCallParams>, stateModifyCallbacks?: StateModifyCallbacks) => Promise<ResponseModel>
+      type TriggerApiCallFn = (params?: Partial<TriggerApiCallParams>, stateModifyCallbacks?: StateModifyCallbacks) => Promise<Response>
 
       interface ComponentPropsForWithRequest extends Partial<UseRequestReturnType> {
         triggerApiCall?: TriggerApiCallFn;
@@ -56,7 +56,7 @@ declare global {
         errorMessage: string;
       }
 
-      interface AJAXStateProps {
+      interface AJAXStateProps extends Omit<Response, 'success'> {
         data?: any;
         loading?: any;
         error?: Error | null;
@@ -88,7 +88,7 @@ declare global {
         stateModifyCallbackOnFailure?: (state: StateType) => StateType
       }
 
-      type RequestFnReturnType = Promise<ResponseModel>
+      type RequestFnReturnType = Promise<Response>
 
       type RequestFn = (
         requestBody: RequestBody,
@@ -108,6 +108,7 @@ declare global {
         customRequestFn?: types.API.RequestFn
         requestId?: string;
         customErrorMessage?: string;
+        customSuccessMessage?: string;
       }
     }
   }
